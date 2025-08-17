@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>台灣香客大樓一覽</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #dddddd; text-align: left; padding: 8px; }
+        th { background-color: #f2f2f2; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+    </style>
+</head>
+<body>
+
+    <h1>台灣香客大樓一覽</h1>
+    <div id="table-container"></div>
+
+    <script src="data.js"></script>
+    <script>
+        // 動態生成表格
+        function generateTable(data) {
+            if (!data || data.length === 0) {
+                document.getElementById('table-container').innerText = '查無資料。';
+                return;
+            }
+
+            const container = document.getElementById('table-container');
+            const table = document.createElement('table');
+            const thead = document.createElement('thead');
+            const tbody = document.createElement('tbody');
+            const headers = Object.keys(data[0]);
+
+            // 建立表頭
+            const headerRow = document.createElement('tr');
+            headers.forEach(headerText => {
+                const th = document.createElement('th');
+                th.textContent = headerText;
+                headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
+
+            // 建立表身
+            data.forEach(obj => {
+                const row = document.createElement('tr');
+                headers.forEach(header => {
+                    const cell = document.createElement('td');
+                    cell.textContent = obj[header] === null ? '' : obj[header];
+                    row.appendChild(cell);
+                });
+                tbody.appendChild(row);
+            });
+
+            table.appendChild(thead);
+            table.appendChild(tbody);
+            container.appendChild(table);
+        }
+
+        // 頁面載入後直接使用 pilgrimData 變數生成表格
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof pilgrimData !== 'undefined') {
+                generateTable(pilgrimData);
+            } else {
+                console.error('尋無 pilgrimData 資料。');
+                document.getElementById('table-container').innerText = '資料載入失敗。';
+            }
+        });
+    </script>
+
+</body>
+</html>
